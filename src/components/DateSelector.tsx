@@ -5,6 +5,7 @@ import {
     parseISO,
     isWeekend,
     startOfToday,
+    isSameDay,
 } from "date-fns";
 import { es } from "date-fns/locale";
 import AttendanceTable from "./AttendanceTable";
@@ -53,13 +54,13 @@ const DateSelector: React.FC = () => {
     );
     const [endDate, setEndDate] = useState("");
     const [includeWeekends, setExcludeWeekends] = useState(false);
+    const [includeFeriados, setExcludeFeriados] = useState(false);
     const [attendanceData, setAttendanceData] = useState<AttendanceRecord[]>(
         []
     );
     const [feriados, setFeriados] = useState<Feriado[]>([]);
 
     const [tableKey, setTableKey] = useState(0);
-    console.log(attendanceData);
 
     useEffect(() => {
         const currentYear = new Date().getFullYear();
@@ -72,7 +73,20 @@ const DateSelector: React.FC = () => {
         const dateRange = eachDayOfInterval({
             start: parseISO(startDate),
             end: parseISO(endDate),
-        }).filter((date) => includeWeekends || !isWeekend(date));
+        }).filter((date) => {
+            const isWeekendDay = isWeekend(date);
+            const isFeriado = feriados.some((feriado) =>
+                isSameDay(date, parseISO(feriado.date))
+            );
+
+            // Si no está seleccionado uno de ellos, se filtran.
+            // Si está incluido incluir fines de semana o feriados, se aceptan.
+            if (!includeWeekends && isWeekendDay) return false;
+            if (!includeFeriados && isFeriado) return false;
+
+            // Pasa el filtro
+            return true;
+        });
 
         const newData = dateRange.flatMap((date) => [
             {
@@ -168,38 +182,40 @@ const DateSelector: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col max-w-5xl items-center p-6 bg-white shadow-lg rounded-xl w-full  mx-auto border border-gray-300">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        <div className="flex flex-col max-w-6xl items-center p-6 bg-white shadow-lg rounded-xl w-full mx-auto border border-gray-300">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
                 Selecciona un rango de fechas
             </h2>
-            <div className="flex items-center space-x-6 w-full justify-center">
+
+            <div className="flex flex-wrap gap-8 justify-center w-full mb-6">
                 <div className="flex flex-col">
-                    <label className="text-sm font-medium text-gray-700 mb-1">
+                    <label className="text-sm font-semibold text-gray-700 mb-1">
                         Fecha de inicio
                     </label>
                     <input
                         type="date"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        className="p-3 border rounded-lg text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-sm cursor-pointer"
+                        className="p-3 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-sm cursor-pointer"
                     />
                 </div>
                 <div className="flex flex-col">
-                    <label className="text-sm font-medium text-gray-700 mb-1">
+                    <label className="text-sm font-semibold text-gray-700 mb-1">
                         Fecha de fin
                     </label>
                     <input
                         type="date"
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        className="p-3 border rounded-lg text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-sm cursor-pointer"
+                        className="p-3 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-sm cursor-pointer"
                     />
                 </div>
             </div>
-            <div className="mt-4 flex items-center space-x-2">
+
+            <div className="flex flex-wrap gap-6 justify-center mb-4">
                 <label
                     htmlFor="excludeWeekends"
-                    className="cursor-pointer text-m text-gray-600 flex items-center gap-2 font-bold"
+                    className="flex items-center gap-2 text-gray-700 font-medium"
                 >
                     <input
                         id="excludeWeekends"
@@ -208,12 +224,32 @@ const DateSelector: React.FC = () => {
                         onChange={() => setExcludeWeekends(!includeWeekends)}
                         className="cursor-pointer"
                     />
-                    Incluir sábados y domingos
+                    Incluir{" "}
+                    <span className="bg-gray-200 px-2 py-0.5 rounded cursor-pointer">
+                        Sábados y Domingos
+                    </span>
+                </label>
+                <label
+                    htmlFor="excludeFeriados"
+                    className="flex items-center gap-2 text-gray-700 font-medium"
+                >
+                    <input
+                        id="excludeFeriados"
+                        type="checkbox"
+                        checked={includeFeriados}
+                        onChange={() => setExcludeFeriados(!includeFeriados)}
+                        className="cursor-pointer"
+                    />
+                    Incluir{" "}
+                    <span className="bg-red-200 px-2 py-0.5 rounded cursor-pointer">
+                        Feriados
+                    </span>
                 </label>
             </div>
+
             {startDate && endDate && (
                 <>
-                    <p className="text-gray-700 font-medium mt-4 p-2 bg-gray-100 rounded-lg shadow-inner">
+                    <p className="text-gray-700 font-medium mt-2 p-2 bg-gray-100 rounded-lg shadow-inner text-center">
                         Rango seleccionado:{" "}
                         {format(parseISO(startDate), "dd/MM/yyyy", {
                             locale: es,
@@ -225,14 +261,14 @@ const DateSelector: React.FC = () => {
                     </p>
                     <button
                         onClick={generateAttendance}
-                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow transition hover:bg-blue-700 focus:outline-none"
+                        className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow transition hover:bg-blue-700 focus:outline-none"
                     >
                         Generar Planilla
                     </button>
                 </>
             )}
-            {/* Se encapsula la tabla para controlar el desborde */}
-            <div className="w-full overflow-x-auto">
+
+            <div className="w-full overflow-x-auto mt-6">
                 <AttendanceTable
                     key={tableKey}
                     attendanceData={attendanceData}
@@ -240,7 +276,8 @@ const DateSelector: React.FC = () => {
                     feriados={feriados}
                 />
             </div>
-            <div className="mt-6 flex flex-wrap gap-4 justify-center w-full">
+
+            <div className="mt-8 flex flex-wrap gap-4 justify-center w-full">
                 <button
                     onClick={handleAddEntrada}
                     className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg shadow transition hover:bg-teal-600 focus:outline-none"
@@ -277,5 +314,4 @@ const DateSelector: React.FC = () => {
         </div>
     );
 };
-
 export default DateSelector;

@@ -161,12 +161,12 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
     };
 
     return (
-        <div className="w-full overflow-x-auto mt-6 relative">
+        <div className="w-full mt-4 relative">
             {/* Overlay global para bloquear interacciones cuando se edita */}
             {editingIndex !== null && (
                 <div className="fixed inset-0 bg-black/60 z-10"></div>
             )}
-            <table className="min-w-full border-collapse shadow-md mt-6 w-full max-w-6xl mx-auto relative z-20 overflow-hidden">
+            <table className="min-w-full border-collapse shadow-md mt-6 w-full max-w-8xl mx-auto relative overflow-hidden">
                 <thead>
                     <tr className="bg-gray-200 text-gray-700">
                         <th className="border border-gray-300 px-6 py-3">
@@ -175,9 +175,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                         <th className="border border-gray-300 px-6 py-3">
                             Hora
                         </th>
-                        <th className="border border-gray-300 px-6 py-3">
-                            Clase
-                        </th>
+                        <th className="border border-gray-300 px-10">Clase</th>
                         <th className="border border-gray-300 px-6 py-3">
                             Descripción
                         </th>
@@ -201,24 +199,28 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                         const dayLabel = dateObj
                             ? format(dateObj, "EEEE", { locale: es })
                             : "";
-                        const rowBg =
-                            dateObj && isWeekend(dateObj)
-                                ? "bg-gray-200"
-                                : "bg-white";
+
                         const isEditing = editingIndex === index;
                         const errorMsg = invalidErrors[index] || "";
                         const tipoDia = record.fecha
                             ? getTipoDia(record, feriados)
                             : "";
+                        const rowBgFinde =
+                            dateObj && isWeekend(dateObj)
+                                ? "bg-gray-200"
+                                : `${tipoDia !== "Normal" && "bg-red-200"}`;
 
                         return (
                             <tr
                                 key={index}
-                                className={`text-center cursor-pointer relative transition-all duration-300 ease-in-out ${rowBg} ${
+                                className={`text-center cursor-pointer relative transition-all duration-300 ease-in-out ${rowBgFinde} ${
                                     isEditing
-                                        ? "z-30 bg-white scale-[1.01] shadow-lg shadow-black/20 ring-2 ring-blue-500"
+                                        ? "z-50 bg-white shadow-lg shadow-black/20 ring-2 ring-blue-600 "
                                         : "hover:bg-gray-200"
-                                } ${errorMsg ? "border-2 border-red-400" : ""}`}
+                                } ${
+                                    errorMsg &&
+                                    "border-2 border-red-500 bg-red-200"
+                                }`}
                                 title={dateObj ? `Día: ${dayLabel}` : ""}
                             >
                                 {isEditing ? (
