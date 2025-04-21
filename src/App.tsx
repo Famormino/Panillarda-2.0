@@ -5,7 +5,7 @@ import { Toaster } from "react-hot-toast";
 const App: React.FC = () => {
     return (
         <div>
-            <div className="min-h-screen flex flex-col items-center justify-start bg-gray-200 p-8">
+            <div className="min-h-screen flex flex-col items-center justify-start bg-gray-200 p-12">
                 <Title text="Planilla de Asistencia" />
                 <div className="w-full ">
                     <Toaster position="top-right" />

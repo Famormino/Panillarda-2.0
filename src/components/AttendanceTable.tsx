@@ -166,7 +166,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
             {editingIndex !== null && (
                 <div className="fixed inset-0 bg-black/60 z-10"></div>
             )}
-            <table className="min-w-full border-collapse shadow-md mt-6 w-full max-w-8xl mx-auto relative overflow-hidden">
+            <table className="min-w-full border-collapse shadow-md mt-6 w-full max-w-8xl mx-auto relative overflow-x-auto sm:overflow-visible">
                 <thead>
                     <tr className="bg-gray-200 text-gray-700">
                         <th className="border border-gray-300 px-6 py-3">
