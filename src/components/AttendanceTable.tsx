@@ -4,61 +4,8 @@ import { es } from "date-fns/locale";
 import { Pencil, Trash, Check, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import { AttendanceRecord, Feriado } from "./DateSelector";
-
-const getInvalidErrors = (
-    records: AttendanceRecord[]
-): { [index: number]: string } => {
-    const errors: { [index: number]: string } = {};
-
-    // Error si la fecha está vacía
-    records.forEach((record, index) => {
-        if (!record.fecha.trim()) {
-            errors[index] = "Fecha vacía";
-        }
-    });
-
-    // Error en registros duplicados (todos los campos iguales)
-    records.forEach((record, index, array) => {
-        const duplicateFound = array.some(
-            (r, i) =>
-                i !== index &&
-                r.fecha === record.fecha &&
-                r.hora === record.hora &&
-                r.clase === record.clase &&
-                r.descripcion === record.descripcion &&
-                r.tp === record.tp
-        );
-        if (duplicateFound) {
-            errors[index] = errors[index]
-                ? errors[index] + " / Registro duplicado"
-                : "Registro duplicado";
-        }
-    });
-
-    // Validar pares: para cada fecha, el número de "P10" debe ser igual al de "P20"
-    const groups: { [fecha: string]: { p10: number[]; p20: number[] } } = {};
-    records.forEach((record, index) => {
-        if (record.fecha.trim()) {
-            if (!groups[record.fecha])
-                groups[record.fecha] = { p10: [], p20: [] };
-            if (record.clase.toUpperCase() === "P10")
-                groups[record.fecha].p10.push(index);
-            else if (record.clase.toUpperCase() === "P20")
-                groups[record.fecha].p20.push(index);
-        }
-    });
-    Object.values(groups).forEach((group) => {
-        if (group.p10.length !== group.p20.length) {
-            group.p10.concat(group.p20).forEach((i) => {
-                errors[i] = errors[i]
-                    ? errors[i] + " / Par incompleto"
-                    : "Par incompleto";
-            });
-        }
-    });
-
-    return errors;
-};
+import { getInvalidErrors } from "./helpers/getInvalidData";
+import { getTipoDia } from "./helpers/getTipoDia";
 
 type AttendanceTableProps = {
     attendanceData: AttendanceRecord[];
@@ -78,21 +25,6 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
     if (attendanceData.length === 0) return null;
 
     const invalidErrors = getInvalidErrors(attendanceData);
-    // Determina el "Tipo día" según feriado, fin de semana o normal.
-    const getTipoDia = (
-        record: AttendanceRecord,
-        feriados: Feriado[]
-    ): string => {
-        if (!record.fecha.trim()) return "";
-        const dateObj = parse(record.fecha, "dd/MM/yyyy", new Date());
-        // Convertir la fecha del registro a formato "yyyy-MM-dd"
-        const recordISO = format(dateObj, "yyyy-MM-dd");
-        // Si la API retorna la fecha ya en ese formato, se puede comparar directamente
-        const holiday = feriados.find((f) => f.date === recordISO);
-        if (holiday) return holiday.name; // Retorna el nombre del feriado
-        if (isWeekend(dateObj)) return "Fin de semana";
-        return "Normal";
-    };
 
     const handleDelete = (index: number) => {
         const record = attendanceData[index];
@@ -102,8 +34,8 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                 <span>
                     <strong>
                         {record.fecha
-                            ? `Día: ${record.fecha} - ${record.clase}`
-                            : "Registro sin fecha"}
+                            ? `Día: ${record.fecha} - ${record.clase} ?`
+                            : ""}
                     </strong>
                 </span>
                 <img
@@ -207,7 +139,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                             : "";
                         const rowBgFinde =
                             dateObj && isWeekend(dateObj)
-                                ? "bg-gray-200"
+                                ? "bg-gray-400"
                                 : `${tipoDia !== "Normal" && "bg-red-200"}`;
 
                         return (

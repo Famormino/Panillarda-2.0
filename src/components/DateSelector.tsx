@@ -182,15 +182,15 @@ const DateSelector: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col items-center p-4 sm:p-6 bg-white shadow-lg rounded-xl w-full mx-auto border border-gray-300">
+        <div className="flex flex-col items-center p-4 sm:p-6 bg-white shadow-lg rounded-xl max-w-7xl mx-auto border border-gray-300">
             <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
                 Selecciona un rango de fechas
             </h2>
 
             <div className="flex flex-wrap gap-8 justify-center w-full mb-6">
-                <div className="flex flex-col w-full sm:w-auto">
-                    <label className="text-sm font-semibold text-gray-700 mb-1">
-                        Fecha de inicio
+                <div className="flex flex-col w-full items-center sm:w-auto">
+                    <label className="text-m  font-semibold text-gray-700 mb-1">
+                        Fecha de Inicio
                     </label>
                     <input
                         type="date"
@@ -199,9 +199,9 @@ const DateSelector: React.FC = () => {
                         className="p-3 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-sm cursor-pointer"
                     />
                 </div>
-                <div className="flex flex-col w-full sm:w-auto">
-                    <label className="text-sm font-semibold text-gray-700 mb-1">
-                        Fecha de fin
+                <div className="flex flex-col w-full sm:w-auto items-center">
+                    <label className="text-m font-semibold text-gray-700 mb-1">
+                        Fecha de Fin
                     </label>
                     <input
                         type="date"
@@ -224,7 +224,7 @@ const DateSelector: React.FC = () => {
                         onChange={() => setExcludeWeekends(!includeWeekends)}
                         className="cursor-pointer"
                     />
-                    <span className="bg-gray-200 px-2 py-0.5 rounded cursor-pointer">
+                    <span className="bg-gray-400 from-stone-900 px-2 py-0.5 rounded cursor-pointer">
                         Incluir Sábados y Domingos
                     </span>
                 </label>
@@ -266,7 +266,7 @@ const DateSelector: React.FC = () => {
                 </>
             )}
 
-            <div className="w-full overflow-x-auto mt-6">
+            <div className="w-full overflow-x-auto mt-4">
                 <AttendanceTable
                     key={tableKey}
                     attendanceData={attendanceData}
@@ -275,7 +275,7 @@ const DateSelector: React.FC = () => {
                 />
             </div>
 
-            <div className="mt-2 flex flex-col sm:flex-row flex-wrap gap-4 justify-center w-full">
+            <div className="mt-8 flex flex-col sm:flex-row flex-wrap gap-4 justify-center w-full">
                 <button
                     onClick={handleAddEntrada}
                     className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg shadow transition hover:bg-teal-600 focus:outline-none"
