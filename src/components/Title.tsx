@@ -8,7 +8,7 @@ type TitleProps = {
 
 const Title: React.FC<TitleProps> = ({ text, className = "", as: Component = "h1" }) => {
     const baseStyles = `
-        relative inline-block text-4xl font-semibold tracking-tight 
+        mb-6 relative inline-block text-4xl font-semibold tracking-tight 
         text-transparent bg-clip-text bg-gradient-to-r 
         from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400
         mb-12 cursor-pointer transform transition-transform duration-300 ease-in-out 

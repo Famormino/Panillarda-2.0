@@ -27,21 +27,14 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
     const invalidErrors = getInvalidErrors(attendanceData);
 
     const handleDelete = (index: number) => {
-        const record = attendanceData[index];
         setAttendanceData(attendanceData.filter((_, i) => i !== index));
         toast(
-            <div className="flex items-center gap-3 text-sm">
-                <span>
-                    <strong>
-                        {record.fecha
-                            ? `Día: ${record.fecha} - ${record.clase} ?`
-                            : ""}
-                    </strong>
-                </span>
+            <div className="flex items-center text-sm">
+                <span></span>
                 <img
                     src="/afuera.jpg"
                     alt="Deleted"
-                    className="w-20 h-20 object-cover rounded-full"
+                    className="w-22 h-20 object-cover rounded-full"
                 />
             </div>,
             { duration: 2000, position: "top-right" }
@@ -151,7 +144,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                                         : "hover:bg-gray-200"
                                 } ${
                                     errorMsg &&
-                                    "border-2 border-red-500 bg-red-200"
+                                    "border-2 border-red-400 bg-red-200"
                                 }`}
                                 title={dateObj ? `Día: ${dayLabel}` : ""}
                             >

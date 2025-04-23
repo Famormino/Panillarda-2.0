@@ -46,8 +46,8 @@ export const getInvalidErrors = (
         if (group.p10.length !== group.p20.length) {
             group.p10.concat(group.p20).forEach((i) => {
                 errors[i] = errors[i]
-                    ? errors[i] + " / Par Entrada/Salida Incompleto"
-                    : "Par Entrada/Salida Incompleto";
+                    ? errors[i] + " / Par Entrada-Salida Incompleto"
+                    : "Par Entrada-Salida Incompleto";
             });
         }
     });
