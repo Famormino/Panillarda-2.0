@@ -40,11 +40,42 @@ const DateSelector: React.FC = () => {
     );
     const [feriados, setFeriados] = useState<Feriado[]>([]);
     const [tableKey, setTableKey] = useState(0);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const currentYear = new Date().getFullYear();
         getFeriados(currentYear, "AR").then((data) => setFeriados(data));
     }, []);
+    useEffect(() => {
+        fetch(
+            "https://script.google.com/macros/s/AKfycbxq_iRiqJOxSII-U07D7ib9KUtsksvOtsRPylxqgW3Nig3N5ITSBH8FzdpIwi1QxZbT/exec"
+        )
+            .then((res) => res.json())
+            .then((data: Feriado[]) => {
+                const normalizados = data.map((f) => ({
+                    ...f,
+                    date: new Date(f.date).toISOString().split("T")[0], //
+                }));
+
+                setFeriados((prev) => {
+                    const combinados = [...prev, ...normalizados];
+
+                    // Evitamos duplicados por fecha
+                    const unicos = combinados.filter(
+                        (feriado, index, self) =>
+                            index ===
+                            self.findIndex((f) => f.date === feriado.date)
+                    );
+
+                    return unicos;
+                });
+            })
+            .catch((err) =>
+                console.error("Error al cargar feriados personalizados:", err)
+            );
+    }, []);
+
+    console.log(feriados);
 
     const generateAttendance = () => {
         if (!startDate || !endDate) return;
@@ -173,9 +204,57 @@ const DateSelector: React.FC = () => {
         });
     };
 
+    const fetchFeriadosPersonalizados = async () => {
+        try {
+            const response = await fetch(
+                "https://script.google.com/macros/s/AKfycbxq_iRiqJOxSII-U07D7ib9KUtsksvOtsRPylxqgW3Nig3N5ITSBH8FzdpIwi1QxZbT/exec"
+            );
+            const data: Feriado[] = await response.json();
+
+            const normalizados = data.map((f) => ({
+                ...f,
+                date: new Date(f.date).toISOString().split("T")[0],
+            }));
+
+            setFeriados((prev) => {
+                const combinados = [...prev, ...normalizados];
+
+                const unicos = combinados.filter(
+                    (feriado, index, self) =>
+                        index === self.findIndex((f) => f.date === feriado.date)
+                );
+
+                return unicos;
+            });
+        } catch (err) {
+            console.error("Error al recargar feriados personalizados:", err);
+        }
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        fetchFeriadosPersonalizados(); // Actualiza los feriados al cerrar
+        toast.success("Feriado agregado correctamente", {
+            duration: 3000,
+            position: "top-right",
+            style: {
+                background: "#4ade80",
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: "14px",
+            },
+            iconTheme: {
+                primary: "#ffffff",
+                secondary: "#16a34a",
+            },
+        });
+    };
+    const baseBtnStyle =
+        "flex items-center justify-center gap-2 px-6 py-2 rounded-lg text-white shadow-md transition-transform transform hover:scale-105 font-medium";
+
     return (
-        <div className="flex flex-col items-center p-6 sm:p-10 bg-white shadow-2xl rounded-2xl max-w-7xl mx-auto border border-gray-200">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+        <div className="flex flex-col items-center p-6 sm:p-10 bg-white shadow-2xl rounded-2xl max-w-6xl mx-auto border border-gray-200">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
                 Selecciona un rango de fechas
             </h2>
 
@@ -209,7 +288,20 @@ const DateSelector: React.FC = () => {
                     <input
                         type="checkbox"
                         checked={includeWeekends}
-                        onChange={() => setExcludeWeekends(!includeWeekends)}
+                        onChange={() => {
+                            setExcludeWeekends(!includeWeekends);
+                            toast(
+                                <div className="flex items-center text-sm">
+                                    <span></span>
+                                    <img
+                                        src="/jg.jpg"
+                                        alt="Deleted"
+                                        className="w-22 h-20 object-cover"
+                                    />
+                                </div>,
+                                { duration: 2000, position: "top-right" }
+                            );
+                        }}
                         className="cursor-pointer"
                     />
                     <span className="bg-gray-300 px-3 py-1 rounded shadow-sm">
@@ -220,7 +312,20 @@ const DateSelector: React.FC = () => {
                     <input
                         type="checkbox"
                         checked={includeFeriados}
-                        onChange={() => setExcludeFeriados(!includeFeriados)}
+                        onChange={() => {
+                            setExcludeFeriados(!includeFeriados);
+                            toast(
+                                <div className="flex items-center text-sm">
+                                    <span></span>
+                                    <img
+                                        src="/jg.jpg"
+                                        alt="Deleted"
+                                        className="w-22 h-20 object-cover"
+                                    />
+                                </div>,
+                                { duration: 2000, position: "top-right" }
+                            );
+                        }}
                         className="cursor-pointer"
                     />
                     <span className="bg-red-200 px-3 py-1 rounded shadow-sm">
@@ -260,33 +365,72 @@ const DateSelector: React.FC = () => {
             </div>
 
             <div className="mt-10 flex flex-col sm:flex-row flex-wrap gap-4 justify-center w-full">
+                {/* Estilo base compartido */}
+
                 <button
                     onClick={handleAddEntrada}
-                    className="flex items-center gap-2 px-5 py-2 bg-teal-500 text-white rounded-lg shadow-md hover:bg-teal-600 transition"
+                    className={`${baseBtnStyle} bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700`}
                 >
                     <PlusCircle size={20} /> Agregar Entrada
                 </button>
                 <button
                     onClick={handleAddSalida}
-                    className="flex items-center gap-2 px-5 py-2 bg-indigo-500 text-white rounded-lg shadow-md hover:bg-indigo-600 transition"
+                    className={`${baseBtnStyle} bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700`}
                 >
                     <PlusCircle size={20} /> Agregar Salida
                 </button>
                 {attendanceData.length > 0 && (
                     <button
                         onClick={handleReiniciar}
-                        className="flex items-center gap-2 px-5 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition"
+                        className={`${baseBtnStyle} bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700`}
                     >
                         <RotateCcw size={20} /> Reiniciar
                     </button>
                 )}
+                <button
+                    onClick={() => setShowModal(true)}
+                    className={`${baseBtnStyle} bg-gradient-to-r from-gray-600 to-black hover:from-black hover:to-gray-800`}
+                >
+                    <PlusCircle size={20} /> Agregar Feriado Manualmente
+                </button>
+                {/* Botón destacado abajo con mismo estilo */}
                 {attendanceData.length > 0 && (
-                    <button
-                        onClick={copyToClipboard}
-                        className="flex items-center gap-2 px-8 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition"
-                    >
-                        <Clipboard size={24} /> Copiar registros al Portapapeles
-                    </button>
+                    <div className="w-full flex justify-center mt-4">
+                        <button
+                            onClick={copyToClipboard}
+                            className={`w-full sm:w-2/3 md:w-1/2 lg:w-1/3 ${baseBtnStyle} bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700`}
+                        >
+                            <Clipboard size={24} /> Copiar registros al
+                            Portapapeles
+                        </button>
+                    </div>
+                )}
+                {/* Modal */}
+                {showModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 animate-fade-in">
+                        <div className="bg-white p-6 rounded-xl max-w-2xl w-full relative shadow-2xl transform transition-transform scale-100 animate-fade-in-down">
+                            <button
+                                onClick={closeModal}
+                                className="absolute top-3 right-4 text-3xl text-gray-600 hover:text-red-500 transition transform hover:scale-125"
+                            >
+                                &times;
+                            </button>
+                            <h2 className="text-2xl font-semibold mb-4 text-center">
+                                Cargar Feriado Personalizado
+                            </h2>
+                            <iframe
+                                src="https://docs.google.com/forms/d/e/1FAIpQLSfc10_zo3iy6txpByMvYTFWkfbsDFXKbdMU6cMnIYX9HCIrdw/viewform?fbzx=-7451940107771135871"
+                                width="100%"
+                                height="500"
+                                frameBorder="0"
+                                marginHeight={0}
+                                marginWidth={0}
+                                title="Formulario de Feriados"
+                            >
+                                Cargando…
+                            </iframe>
+                        </div>
+                    </div>
                 )}
             </div>
         </div>

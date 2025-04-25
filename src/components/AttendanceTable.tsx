@@ -262,7 +262,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                                                 className="text-green-600 hover:text-green-800 animate-pulse"
                                                 title="Guardar cambios"
                                             >
-                                                <Check size={30} />
+                                                <Check size={32} />
                                             </button>
                                         </td>
                                     </>
