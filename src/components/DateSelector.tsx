@@ -365,8 +365,6 @@ const DateSelector: React.FC = () => {
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row flex-wrap gap-4 justify-center w-full">
-                {/* Estilo base compartido */}
-
                 <button
                     onClick={handleAddEntrada}
                     className={`${baseBtnStyle} bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700`}
@@ -389,7 +387,7 @@ const DateSelector: React.FC = () => {
                 )}
                 <button
                     onClick={() => setShowModal(true)}
-                    className={`${baseBtnStyle} bg-gradient-to-r from-gray-600 to-black hover:from-black hover:to-gray-800`}
+                    className={`${baseBtnStyle} bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700`}
                 >
                     <PlusCircle size={20} /> Agregar Feriado Manualmente
                 </button>

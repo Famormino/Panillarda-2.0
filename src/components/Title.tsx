@@ -1,6 +1,5 @@
-import React, { JSX } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
-import { useState, useEffect } from "react";
 
 type TitleProps = {
     text: string;
@@ -13,10 +12,16 @@ const Title: React.FC<TitleProps> = ({
     className = "",
     as: Component = "h1",
 }) => {
-    const [darkMode, setDarkMode] = useState(false);
+    // Leer valor inicial de localStorage
+    const [darkMode, setDarkMode] = useState(() => {
+        const stored = localStorage.getItem("darkMode");
+        return stored === "true"; // transforma string a boolean
+    });
 
+    // Aplicar la clase y guardar en localStorage cuando cambia
     useEffect(() => {
         document.documentElement.classList.toggle("dark", darkMode);
+        localStorage.setItem("darkMode", darkMode.toString());
     }, [darkMode]);
 
     const baseStyles = `
@@ -25,32 +30,38 @@ const Title: React.FC<TitleProps> = ({
         from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400
         cursor-pointer transition-transform duration-300 ease-in-out 
         hover:scale-105 hover:rotate-[-0.5deg]
-        relative inline-block
-        after:content-[''] after:absolute after:left-0 
-        after:bottom-[-12px] after:w-full after:h-1 
-        after:bg-indigo-500 dark:after:bg-indigo-400 
-        after:transform after:scale-x-0 hover:after:scale-x-100 
-        after:origin-left after:transition-transform after:duration-500
     `;
 
     return (
-        <div className="flex items-center justify-between mb-12">
+        <div className="mb-12">
+            {/* Toggle en la parte superior derecha */}
+            <div className="flex justify-end mb-4">
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setDarkMode(!darkMode)}
+                        className="p-3 gap-2 flex items-center rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition"
+                        title="Cambiar modo"
+                    >
+                        {darkMode ? (
+                            <Sun size={24} className="text-yellow-400" />
+                        ) : (
+                            <Moon size={24} className="text-gray-800" />
+                        )}
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {darkMode
+                                ? "Luz y Fuerza"
+                                : "Oscuridad y Debilidad"}
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            {/* Título centrado */}
             <Component
-                className={`${baseStyles} ${className} text-center mx-auto`}
+                className={`${baseStyles} ${className} flex justify-center`}
             >
                 {text}
             </Component>
-            <button
-                onClick={() => setDarkMode(!darkMode)}
-                className="ml-4 p-2 rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition"
-                title="Cambiar modo"
-            >
-                {darkMode ? (
-                    <Sun size={24} className="text-yellow-400" />
-                ) : (
-                    <Moon size={24} className="text-gray-800" />
-                )}
-            </button>
         </div>
     );
 };
