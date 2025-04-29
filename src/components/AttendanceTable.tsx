@@ -86,14 +86,14 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
     };
 
     return (
-        <div className="w-full mt-4 relative">
+        <div className="w-full mt-0 relative">
             {/* Overlay global para bloquear interacciones cuando se edita */}
             {editingIndex !== null && (
                 <div className="fixed inset-0 bg-black/60 z-10"></div>
             )}
             <table className="min-w-full border-collapse shadow-md mt-6 w-full max-w-8xl mx-auto relative overflow-x-auto sm:overflow-visible">
                 <thead>
-                    <tr className="bg-gray-200 text-gray-700">
+                    <tr className="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-white">
                         <th className="border border-gray-300 px-6 py-3">
                             Fecha
                         </th>
@@ -132,19 +132,21 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                             : "";
                         const rowBgFinde =
                             dateObj && isWeekend(dateObj)
-                                ? "bg-gray-400"
-                                : `${tipoDia !== "Normal" && "bg-red-200"}`;
+                                ? "bg-gray-400 dark:bg-gray-400"
+                                : tipoDia !== "Normal"
+                                ? "bg-red-200 dark:bg-red-400"
+                                : "";
 
                         return (
                             <tr
                                 key={index}
                                 className={`text-center cursor-pointer relative transition-all duration-300 ease-in-out ${rowBgFinde} ${
                                     isEditing
-                                        ? "z-50 bg-white shadow-lg shadow-black/20 ring-2 ring-blue-600 "
-                                        : "hover:bg-gray-200"
+                                        ? "z-50 bg-white dark:bg-gray-900 dark:text-white shadow-lg shadow-black/20 ring-2 ring-blue-600"
+                                        : "hover:bg-gray-200 dark:hover:bg-gray-800"
                                 } ${
                                     errorMsg &&
-                                    "border-2 border-red-400 bg-red-200"
+                                    "border-2 border-red-500 dark:border-red-500 bg-red-300 dark:bg-red-400"
                                 }`}
                                 title={dateObj ? `Día: ${dayLabel}` : ""}
                             >
@@ -172,7 +174,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                                                     e.key === "Enter" &&
                                                     handleSave()
                                                 }
-                                                className="w-full border px-2 py-1 text-center"
+                                                className="w-full border px-2 py-1 text-center bg-white dark:bg-gray-800 text-black dark:text-white border-gray-300 dark:border-gray-600"
                                             />
                                         </td>
                                         <td className="border border-gray-300 px-6 py-3">
@@ -186,7 +188,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                                                     e.key === "Enter" &&
                                                     handleSave()
                                                 }
-                                                className="w-full border px-2 py-1 text-center"
+                                                className="w-full border px-2 py-1 text-center bg-white dark:bg-gray-800 text-black dark:text-white border-gray-300 dark:border-gray-600"
                                             />
                                         </td>
                                         <td className="border border-gray-300 px-6 py-3">
@@ -201,7 +203,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                                                     e.key === "Enter" &&
                                                     handleSave()
                                                 }
-                                                className="w-full border px-2 py-1 text-center"
+                                                className="w-full border px-2 py-1 text-center bg-white dark:bg-gray-800 text-black dark:text-white border-gray-300 dark:border-gray-600"
                                             >
                                                 <option value="P10">P10</option>
                                                 <option value="P20">P20</option>
@@ -224,7 +226,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                                                     e.key === "Enter" &&
                                                     handleSave()
                                                 }
-                                                className="w-full border px-2 py-1 text-center"
+                                                className="w-full border px-2 py-1 text-center dark:bg-gray-800 dark:border-gray-600"
                                             />
                                         </td>
                                         <td className="border border-gray-300 px-6 py-3">
@@ -239,7 +241,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                                                     e.key === "Enter" &&
                                                     handleSave()
                                                 }
-                                                className="w-full border px-2 py-1 text-center"
+                                                className="w-full border px-2 py-1 text-center dark:bg-gray-800 dark:border-gray-600"
                                             />
                                         </td>
                                         <td className="border border-gray-300 px-6 py-3">
@@ -250,7 +252,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                                         </td>
                                         <td className="border border-gray-300 px-6 py-3">
                                             {errorMsg && (
-                                                <span className="flex items-center justify-center gap-1 text-red-600 text-sm">
+                                                <span className="flex items-center justify-center gap-1 text-red-600 text-sm dark:text-white animate-pulse">
                                                     <AlertTriangle size={18} />{" "}
                                                     {errorMsg}
                                                 </span>
@@ -268,27 +270,27 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                                     </>
                                 ) : (
                                     <>
-                                        <td className="border border-gray-300 px-6 py-3">
+                                        <td className="border border-gray-300 dark:border-gray-600 px-6 py-3 text-gray-900 dark:text-white">
                                             {record.fecha}
                                         </td>
-                                        <td className="border border-gray-300 px-6 py-3">
+                                        <td className="border border-gray-300 dark:border-gray-600 px-6 py-3 text-gray-900 dark:text-white">
                                             {record.hora}
                                         </td>
-                                        <td className="border border-gray-300 px-6 py-3">
+                                        <td className="border border-gray-300 dark:border-gray-600 px-6 py-3 text-gray-900 dark:text-white">
                                             {record.clase}
                                         </td>
-                                        <td className="border border-gray-300 px-6 py-3">
+                                        <td className="border border-gray-300 dark:border-gray-600 px-6 py-3 text-gray-900 dark:text-white">
                                             {record.descripcion}
                                         </td>
-                                        <td className="border border-gray-300 px-6 py-3">
+                                        <td className="border border-gray-300 dark:border-gray-600 px-6 py-3 text-gray-900 dark:text-white">
                                             {record.tp}
                                         </td>
-                                        <td className="border border-gray-300 px-6 py-3">
+                                        <td className="border border-gray-300 dark:border-gray-600 px-6 py-3 text-gray-900 dark:text-white">
                                             {tipoDia}
                                         </td>
-                                        <td className="border border-gray-300 px-6 py-3">
+                                        <td className="border border-gray-300 dark:border-gray-600 px-6 py-3 text-gray-900 dark:text-white">
                                             {errorMsg ? (
-                                                <span className="flex items-center justify-center gap-1 text-red-600 text-sm">
+                                                <span className="flex items-center justify-center gap-1 text-red-600 text-sm dark:text-gray-100 animate-pulse">
                                                     <AlertTriangle size={18} />{" "}
                                                     {errorMsg}
                                                 </span>
@@ -296,7 +298,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                                                 ""
                                             )}
                                         </td>
-                                        <td className="border border-gray-300 px-6 py-3 flex gap-2 justify-center">
+                                        <td className="border border-gray-300 dark:border-gray-600 px-6 py-3 text-gray-900 dark:text-white">
                                             <button
                                                 onClick={() =>
                                                     handleEdit(index)

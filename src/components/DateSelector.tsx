@@ -253,32 +253,32 @@ const DateSelector: React.FC = () => {
         "flex items-center justify-center gap-2 px-6 py-2 rounded-lg text-white shadow-md transition-transform transform hover:scale-105 font-medium";
 
     return (
-        <div className="flex flex-col items-center p-6 sm:p-10 bg-white shadow-2xl rounded-2xl max-w-6xl mx-auto border border-gray-200">
+        <div className="flex flex-col items-center p-6 sm:p-10 bg-white dark:bg-gray-900 shadow-2xl rounded-2xl max-w-6xl mx-auto border border-gray-200 dark:border-gray-700">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
                 Selecciona un rango de fechas
             </h2>
 
             <div className="flex flex-wrap gap-10 justify-center w-full mb-8">
                 <div className="flex flex-col w-full items-center sm:w-auto">
-                    <label className="text-md font-semibold text-gray-700 mb-2">
+                    <label className="text-md font-semibold text-gray-700 dark:text-gray-200 mb-2">
                         Fecha de Inicio
                     </label>
                     <input
                         type="date"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        className="p-3 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md cursor-pointer"
+                        className="p-3 border border-gray-300 rounded-lg text-gray-800 dark:bg-gray-800 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md cursor-pointer"
                     />
                 </div>
                 <div className="flex flex-col w-full sm:w-auto items-center">
-                    <label className="text-md font-semibold text-gray-700 mb-2">
+                    <label className="text-md font-semibold text-gray-700 dark:text-gray-200 mb-2">
                         Fecha de Fin
                     </label>
                     <input
                         type="date"
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        className="p-3 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md cursor-pointer"
+                        className="p-3 border border-gray-300 rounded-lg text-gray-800 dark:bg-gray-800 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:outline-none shadow-md cursor-pointer"
                     />
                 </div>
             </div>
@@ -291,12 +291,12 @@ const DateSelector: React.FC = () => {
                         onChange={() => {
                             setExcludeWeekends(!includeWeekends);
                             toast(
-                                <div className="flex items-center text-sm">
+                                <div className="flex items-center text-sm  dark:bg-slate-900">
                                     <span></span>
                                     <img
                                         src="/jg.jpg"
                                         alt="Deleted"
-                                        className="w-22 h-20 object-cover"
+                                        className="w-22 h-20 object-cover "
                                     />
                                 </div>,
                                 { duration: 2000, position: "top-right" }
@@ -304,7 +304,7 @@ const DateSelector: React.FC = () => {
                         }}
                         className="cursor-pointer"
                     />
-                    <span className="bg-gray-300 px-3 py-1 rounded shadow-sm">
+                    <span className="bg-gray-300 px-3 py-1 rounded shadow-sm ">
                         Incluir Sábados y Domingos
                     </span>
                 </label>
@@ -315,7 +315,7 @@ const DateSelector: React.FC = () => {
                         onChange={() => {
                             setExcludeFeriados(!includeFeriados);
                             toast(
-                                <div className="flex items-center text-sm">
+                                <div className="flex items-center text-sm dark:bg-slate-900">
                                     <span></span>
                                     <img
                                         src="/jg.jpg"
@@ -348,7 +348,7 @@ const DateSelector: React.FC = () => {
                     </p>
                     <button
                         onClick={generateAttendance}
-                        className="mt-4 px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-transform transform hover:scale-105"
+                        className="mt-6 px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-transform transform hover:scale-105"
                     >
                         Generar Planilla
                     </button>
@@ -364,7 +364,7 @@ const DateSelector: React.FC = () => {
                 />
             </div>
 
-            <div className="mt-10 flex flex-col sm:flex-row flex-wrap gap-4 justify-center w-full">
+            <div className="mt-6 flex flex-col sm:flex-row flex-wrap gap-4 justify-center w-full">
                 {/* Estilo base compartido */}
 
                 <button
@@ -408,7 +408,7 @@ const DateSelector: React.FC = () => {
                 {/* Modal */}
                 {showModal && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 animate-fade-in">
-                        <div className="bg-white p-6 rounded-xl max-w-2xl w-full relative shadow-2xl transform transition-transform scale-100 animate-fade-in-down">
+                        <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-6 rounded-xl max-w-2xl w-full relative shadow-2xl transform transition-transform scale-100 animate-fade-in-down">
                             <button
                                 onClick={closeModal}
                                 className="absolute top-3 right-4 text-3xl text-gray-600 hover:text-red-500 transition transform hover:scale-125"
