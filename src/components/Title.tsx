@@ -1,5 +1,5 @@
 import React, { JSX, useEffect, useState } from "react";
-import { Moon, Sun, ZapOff } from "lucide-react";
+import { ZapOff } from "lucide-react";
 
 type TitleProps = {
     text: string;
