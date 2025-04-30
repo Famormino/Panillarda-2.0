@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .dark input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
+    filter: invert(1);
 }

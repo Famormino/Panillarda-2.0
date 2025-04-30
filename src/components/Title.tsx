@@ -1,5 +1,5 @@
 import React, { JSX, useEffect, useState } from "react";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, ZapOff } from "lucide-react";
 
 type TitleProps = {
     text: string;
@@ -43,9 +43,12 @@ const Title: React.FC<TitleProps> = ({
                         title="Cambiar modo"
                     >
                         {darkMode ? (
-                            <Sun size={24} className="text-yellow-400" />
+                            <img
+                                src="luzYfuerza.webp"
+                                className="w-6 rounded-full"
+                            />
                         ) : (
-                            <Moon size={24} className="text-gray-800" />
+                            <ZapOff size={16} className="text-gray-800" />
                         )}
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             {darkMode

@@ -14,6 +14,9 @@ import toast from "react-hot-toast";
 import { getFeriados } from "./helpers/getFeriados";
 import { getInvalidErrors } from "./helpers/getInvalidData";
 
+const SHEET_URL =
+    "https://script.google.com/macros/s/AKfycbxq_iRiqJOxSII-U07D7ib9KUtsksvOtsRPylxqgW3Nig3N5ITSBH8FzdpIwi1QxZbT/exec";
+
 export type Feriado = {
     name: string;
     date: string;
@@ -41,15 +44,12 @@ const DateSelector: React.FC = () => {
     const [feriados, setFeriados] = useState<Feriado[]>([]);
     const [tableKey, setTableKey] = useState(0);
     const [showModal, setShowModal] = useState(false);
-
     useEffect(() => {
         const currentYear = new Date().getFullYear();
         getFeriados(currentYear, "AR").then((data) => setFeriados(data));
     }, []);
     useEffect(() => {
-        fetch(
-            "https://script.google.com/macros/s/AKfycbxq_iRiqJOxSII-U07D7ib9KUtsksvOtsRPylxqgW3Nig3N5ITSBH8FzdpIwi1QxZbT/exec"
-        )
+        fetch(SHEET_URL)
             .then((res) => res.json())
             .then((data: Feriado[]) => {
                 const normalizados = data.map((f) => ({
@@ -59,7 +59,6 @@ const DateSelector: React.FC = () => {
 
                 setFeriados((prev) => {
                     const combinados = [...prev, ...normalizados];
-
                     // Evitamos duplicados por fecha
                     const unicos = combinados.filter(
                         (feriado, index, self) =>
@@ -73,9 +72,7 @@ const DateSelector: React.FC = () => {
             .catch((err) =>
                 console.error("Error al cargar feriados personalizados:", err)
             );
-    }, []);
-
-    console.log(feriados);
+    }, [feriados]);
 
     const generateAttendance = () => {
         if (!startDate || !endDate) return;
@@ -206,9 +203,7 @@ const DateSelector: React.FC = () => {
 
     const fetchFeriadosPersonalizados = async () => {
         try {
-            const response = await fetch(
-                "https://script.google.com/macros/s/AKfycbxq_iRiqJOxSII-U07D7ib9KUtsksvOtsRPylxqgW3Nig3N5ITSBH8FzdpIwi1QxZbT/exec"
-            );
+            const response = await fetch(SHEET_URL);
             const data: Feriado[] = await response.json();
 
             const normalizados = data.map((f) => ({
@@ -365,6 +360,8 @@ const DateSelector: React.FC = () => {
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row flex-wrap gap-4 justify-center w-full">
+                {/* Estilo base compartido */}
+
                 <button
                     onClick={handleAddEntrada}
                     className={`${baseBtnStyle} bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700`}
@@ -380,14 +377,14 @@ const DateSelector: React.FC = () => {
                 {attendanceData.length > 0 && (
                     <button
                         onClick={handleReiniciar}
-                        className={`${baseBtnStyle} bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700`}
+                        className={`${baseBtnStyle} bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-700`}
                     >
                         <RotateCcw size={20} /> Reiniciar
                     </button>
                 )}
                 <button
                     onClick={() => setShowModal(true)}
-                    className={`${baseBtnStyle} bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700`}
+                    className={`${baseBtnStyle} bg-gradient-to-r from-gray-800 to-black hover:from-black hover:to-gray-800`}
                 >
                     <PlusCircle size={20} /> Agregar Feriado Manualmente
                 </button>

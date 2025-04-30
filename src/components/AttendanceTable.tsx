@@ -32,7 +32,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
             <div className="flex items-center text-sm">
                 <span></span>
                 <img
-                    src="/afuera.jpg"
+                    src="/afuera.webp"
                     alt="Deleted"
                     className="w-22 h-20 object-cover rounded-full"
                 />
